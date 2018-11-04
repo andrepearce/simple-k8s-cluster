@@ -1,0 +1,51 @@
+- name: Upgrade All Packages
+  yum:
+    name: '*'
+    state: latest
+    update_cache: yes
+
+- name: Disable Swap
+  command: swapoff -a
+
+- name: Remove Swap Mount
+  replace:
+    path: /etc/fstab
+    regexp: '(.*swap.*)'
+    replace: '#\1'
+    backup: yes
+
+- name: Add Firewall Rules
+  firewalld:
+    state: enabled
+    zone: public
+    port: "{{ item }}"
+    permanent: yes
+    immediate: yes
+  with_items: "{{ common_port_ranges }}"
+
+- name: Permissive SELinux
+  selinux:
+    policy: targeted
+    state: permissive
+
+- name: Add Kubernetes RPM
+  yum_repository:
+    name: kubernetes
+    description: Kubernetes YUM repo
+    baseurl: https://packages.cloud.google.com/yum/repos/kubernetes-el7-x86_64
+    enabled: yes
+    gpgcheck: yes
+    repo_gpgcheck: yes
+    gpgkey: https://packages.cloud.google.com/yum/doc/yum-key.gpg https://packages.cloud.google.com/yum/doc/rpm-package-key.gpg
+    exclude: kube*
+
+- name: Install Packages
+  yum:
+    name: "{{ common_packages }}"
+    disable_excludes: all
+
+- name: Start and Enable Kubelet
+  systemd:
+    state: started
+    enabled: yes
+    name: kubelet

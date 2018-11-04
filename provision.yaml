@@ -1,0 +1,19 @@
+#!/usr/bin/env ansible-playbook
+
+- name: Common setup
+  hosts: all
+
+  roles:
+    - common
+
+- name: Master specific setup
+  hosts: master
+
+  roles:
+    - master-setup
+
+- name: Node specific setup
+  hosts: nodes
+
+  roles:
+    - node-setup

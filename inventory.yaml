@@ -1,0 +1,24 @@
+# Ansible Inventory
+#
+# Specified here so we are not dependent on having it exist in /etc/ansible/hosts.
+---
+all:
+  hosts:
+    master:
+      ansible_host: 192.168.0.6
+      ansible_connection: ssh
+      ansible_user: root
+      ansible_ssh_private_key_file: ssh-keys/master
+  children:
+    nodes:
+      hosts:
+        node1:
+          ansible_host: 192.168.0.7
+          ansible_connection: ssh
+          ansible_user: root
+          ansible_ssh_private_key_file: ssh-keys/node
+        node2:
+          ansible_host: 192.168.0.8
+          ansible_connection: ssh
+          ansible_user: root
+          ansible_ssh_private_key_file: ssh-keys/node

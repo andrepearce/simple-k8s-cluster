@@ -1,0 +1,8 @@
+common_port_ranges:
+  - 10250/tcp
+  - 30000-32767/tcp
+
+common_packages:
+  - kubelet
+  - kubeadm
+  - kubectl
