@@ -1,0 +1,47 @@
+- name: Add Firewall Rules
+  firewalld:
+    state: enabled
+    zone: public
+    port: "{{ item }}"
+    permanent: yes
+    immediate: yes
+  with_items: "{{ master_port_ranges }}"
+
+- name: Check for Exisiting Cluster
+  command: kubectl cluster-info
+  ignore_errors: yes
+  register: clusterinfo
+
+- name: Cluster Initialisation
+  block:
+    - name: Setup Cluster
+      command: kubeadm init
+
+    - name: Setup Host kubectl
+      copy:
+        remote_src: true
+        src: /etc/kubernetes/admin.conf
+        dest: /root/.kube/config
+        force: true
+    - name: Taint Master Node
+      command: kubectl taint nodes --all node-role.kubernetes.io/master-
+  when: clusterinfo.failed
+
+- name: Apply Weave Net
+  shell: kubectl apply -f "https://cloud.weave.works/k8s/net?k8s-version=$(kubectl version | base64 | tr -d '\n')"
+
+- name: Create Temporary Node Joining Token
+  command: kubeadm token create
+  register: nodeJoinToken
+
+- name: Set Joining Token Fact
+  set_fact:
+    nodeJoinToken: "{{ nodeJoinToken.stdout }}"
+
+- name: Get CA Cert Hash
+  shell: openssl x509 -pubkey -in /etc/kubernetes/pki/ca.crt | openssl rsa -pubin -outform der 2>/dev/null | openssl dgst -sha256 -hex | sed 's/^.* //'
+  register: caCertHash
+
+- name: Set CA Cert Hash Fact
+  set_fact:
+    caCertHash: "{{ caCertHash.stdout }}"

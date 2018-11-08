@@ -44,8 +44,20 @@
     name: "{{ common_packages }}"
     disable_excludes: all
 
-- name: Start and Enable Kubelet
+- name: Configure /proc/sys/net/bridge/bridge-nf-call-iptables to 1
+  lineinfile:
+    dest: /usr/lib/sysctl.d/90-override.conf
+    line: net.bridge.bridge-nf-call-iptables = 1
+    create: true
+
+- name: Set net.bridge.bridge-nf-call-iptables = 1
+  sysctl:
+    name: net.bridge.bridge-nf-call-iptables
+    value: "1"
+
+- name: Start and Enable Services
   systemd:
     state: started
     enabled: yes
-    name: kubelet
+    name: "{{ item }}"
+  with_items: "{{ common_services }}"

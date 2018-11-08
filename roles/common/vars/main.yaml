@@ -1,8 +1,15 @@
 common_port_ranges:
-  - 10250/tcp
-  - 30000-32767/tcp
+  - 10250/tcp  # Kubelet API
+  - 30000-32767/tcp  # NodePort Services
 
 common_packages:
   - kubelet
   - kubeadm
   - kubectl
+  - device-mapper-persistent-data
+  - lvm2
+  - docker
+
+common_services:
+  - kubelet
+  - docker
