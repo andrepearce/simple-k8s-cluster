@@ -1,0 +1,21 @@
+---
+# ------------------- Kubernetes Admin Service Account ------------------- #
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: kubernetes-admin-account
+  namespace: kube-system
+---
+# ------------------- Kubernetes Admin Account Cluster Role Binding ------------------- #
+apiVersion: rbac.authorization.k8s.io/v1beta1
+kind: ClusterRoleBinding
+metadata:
+  name: kubernetes-admin-account
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: cluster-admin
+subjects:
+  - kind: ServiceAccount
+    name: kubernetes-admin-account
+    namespace: kube-system

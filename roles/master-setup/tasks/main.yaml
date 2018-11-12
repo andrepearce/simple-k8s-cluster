@@ -30,8 +30,34 @@
 - name: Apply Weave Net
   shell: kubectl apply -f "https://cloud.weave.works/k8s/net?k8s-version=$(kubectl version | base64 | tr -d '\n')"
 
-- name: Apply Dashboard
-  shell: kubectl apply -f https://raw.githubusercontent.com/kubernetes/dashboard/master/src/deploy/recommended/kubernetes-dashboard.yaml
+- name: Apply Dashboard Deployment
+  command: kubectl apply -f https://raw.githubusercontent.com/kubernetes/dashboard/master/src/deploy/recommended/kubernetes-dashboard.yaml
+
+- name: Ensures /etc/kubernetes/resources Directory Exists
+  file:
+    path: /etc/kubernetes/resources
+    state: directory
+
+- name: Copy Kubernetes Admin Account YAML
+  copy:
+    src: kubernetes-admin-account.yaml
+    dest: /etc/kubernetes/resources/kubernetes-admin-account.yaml
+
+- name: Apply Kubernetes Admin Account
+  command: kubectl apply -f /etc/kubernetes/resources/kubernetes-admin-account.yaml
+
+- name: Get Kubernetes Admin Account Token
+  shell: kubectl -n kube-system describe secret kubernetes-admin-account | awk '$1=="token:"{print $2}'
+  register: adminToken
+
+- name: Add Kubernetes Admin Account Token to Config
+  command: kubectl config set-credentials kubernetes-admin --token="{{ adminToken.stdout }}"
+
+- name: Fetch Kubernetes Config
+  fetch:
+    src: /root/.kube/config
+    dest: output/kubernetes/config
+    flat: yes
 
 - name: Create Temporary Node Joining Token
   command: kubeadm token create

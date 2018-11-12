@@ -11,3 +11,7 @@ Thumbs.db
 # Ignore SSH Key Directory #
 ############################
 ssh-keys
+
+# Ignore Output Directory #
+###########################
+output
