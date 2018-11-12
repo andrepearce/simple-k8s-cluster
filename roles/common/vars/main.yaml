@@ -1,6 +1,11 @@
-common_port_ranges:
+common_external_port_ranges:
   - 10250/tcp  # Kubelet API
   - 30000-32767/tcp  # NodePort Services
+  - 6783/tcp  # Weave Control
+  - 6783-6784/udp  # Weave Data
+
+common_internal_port_ranges:
+  - 6784/tcp  # Weave Daemon Control
 
 common_packages:
   - kubelet

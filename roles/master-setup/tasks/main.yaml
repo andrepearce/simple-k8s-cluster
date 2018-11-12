@@ -7,10 +7,10 @@
     immediate: yes
   with_items: "{{ master_port_ranges }}"
 
-- name: Check for Exisiting Cluster
-  command: kubectl cluster-info
-  ignore_errors: yes
-  register: clusterinfo
+- name: Exisitng Master Check
+  stat:
+    path: /etc/kubernetes/kubelet.conf
+  register: statResult
 
 - name: Cluster Initialisation
   block:
@@ -25,10 +25,13 @@
         force: true
     - name: Taint Master Node
       command: kubectl taint nodes --all node-role.kubernetes.io/master-
-  when: clusterinfo.failed
+  when: statResult.stat.exists == false
 
 - name: Apply Weave Net
   shell: kubectl apply -f "https://cloud.weave.works/k8s/net?k8s-version=$(kubectl version | base64 | tr -d '\n')"
+
+- name: Apply Dashboard
+  shell: kubectl apply -f https://raw.githubusercontent.com/kubernetes/dashboard/master/src/deploy/recommended/kubernetes-dashboard.yaml
 
 - name: Create Temporary Node Joining Token
   command: kubeadm token create

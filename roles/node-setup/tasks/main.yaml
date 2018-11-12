@@ -1,6 +1,8 @@
-- name: test
-  debug:
-    msg: "{{hostvars['master']['nodeJoinToken']}}"
-- name: test
-  debug:
-    msg: "{{hostvars['master']['caCertHash']}}"
+- name: Exisitng Node Check
+  stat:
+    path: /etc/kubernetes/kubelet.conf
+  register: statResult
+
+- name: Join Cluster
+  command: kubeadm join --token {{hostvars['master']['nodeJoinToken']}} {{ hostvars['master']['ansible_host'] }}:6443 --discovery-token-ca-cert-hash sha256:{{hostvars['master']['caCertHash']}}
+  when: statResult.stat.exists == false

@@ -14,14 +14,31 @@
     replace: '#\1'
     backup: yes
 
-- name: Add Firewall Rules
+- name: Add External Firewall Rules
   firewalld:
     state: enabled
     zone: public
     port: "{{ item }}"
     permanent: yes
     immediate: yes
-  with_items: "{{ common_port_ranges }}"
+  with_items: "{{ common_external_port_ranges }}"
+
+- name: Add Localhost to Internal
+  firewalld:
+    state: enabled
+    zone: internal
+    interface: lo
+    permanent: yes
+    immediate: yes
+
+- name: Add Internal Firewall Rules
+  firewalld:
+    state: enabled
+    zone: internal
+    port: "{{ item }}"
+    permanent: yes
+    immediate: yes
+  with_items: "{{ common_internal_port_ranges }}"
 
 - name: Permissive SELinux
   selinux:
