@@ -61,6 +61,11 @@
     name: "{{ common_packages }}"
     disable_excludes: all
 
+- name: Add the br_netfilter module
+  modprobe:
+    name: br_netfilter
+    state: present
+
 - name: Configure /proc/sys/net/bridge/bridge-nf-call-iptables to 1
   lineinfile:
     dest: /usr/lib/sysctl.d/90-override.conf

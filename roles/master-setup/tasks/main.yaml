@@ -16,7 +16,10 @@
   block:
     - name: Setup Cluster
       command: kubeadm init
-
+    - name: Create ~/.kube
+      file:
+        path: /root/.kube
+        state: directory
     - name: Setup Host kubectl
       copy:
         remote_src: true
