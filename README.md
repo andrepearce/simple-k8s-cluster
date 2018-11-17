@@ -8,6 +8,7 @@ This repository contains anisble roles and a playbook that will provision a basi
 - Ensure the hostname of each machine is unique.
 - [Setup SSH Keys](https://www.digitalocean.com/community/tutorials/how-to-configure-ssh-key-based-authentication-on-a-linux-server) on the master and nodes. The [inventory.yaml](inventory.yaml) file has been configured to look for SSH keys at `./ssh-keys`.
 - Ensure each machine is able to reach the internet.
+- Each machine needs to have a static IP.
 
 ## Provisioning
 
