@@ -17,3 +17,11 @@ The below steps are an example of how you can use this playbook to provision a K
 1. `cd` to the root directory of this repository.
 2. Edit [inventory.yaml](inventory.yaml) to contain the details of the hosts you are provisioning to.
 3. Execute `./provision.yaml`.
+
+## Accessing the cluster
+
+After provisioning, a file will be created at [output/kubernetes/config](output/kubernetes/config). This is a kube config file that provides admin access to the cluster. Move this file to [~/.kube](~/.kube).
+
+```shell
+mv output/kubernetes/config ~/.kube/config
+```

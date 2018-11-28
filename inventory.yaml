@@ -6,21 +6,21 @@ all:
   hosts:
     # Cluster master details
     master:
-      ansible_host: 192.168.0.6
+      ansible_host: 10.0.0.100
       ansible_connection: ssh
       ansible_user: root
-      ansible_ssh_private_key_file: ssh-keys/master
+      ansible_ssh_private_key_file: ssh-keys/swanky-key
   children:
     # Cluster node details
     nodes:
       hosts:
-        node1:
-          ansible_host: 192.168.0.7
+        butterfly:
+          ansible_host: 10.0.0.101
           ansible_connection: ssh
           ansible_user: root
-          ansible_ssh_private_key_file: ssh-keys/node
-        node2:
-          ansible_host: 192.168.0.8
+          ansible_ssh_private_key_file: ssh-keys/butterfly-key
+        link:
+          ansible_host: 10.0.0.102
           ansible_connection: ssh
           ansible_user: root
-          ansible_ssh_private_key_file: ssh-keys/node
+          ansible_ssh_private_key_file: ssh-keys/link-key
