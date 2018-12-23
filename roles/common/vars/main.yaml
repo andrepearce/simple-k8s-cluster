@@ -15,6 +15,7 @@ common_packages:
   - lvm2
   - docker
   - nfs-utils
+  - conntrack
 
 common_services:
   - kubelet
